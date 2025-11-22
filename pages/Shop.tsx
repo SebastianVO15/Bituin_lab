@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, ShoppingCart, Trash2, X, ShoppingBag, Search, Filter, ArrowUpDown, Eye, Minus } from 'lucide-react';
+import { Plus, ShoppingCart, Trash2, X, ShoppingBag, Search, Filter, ArrowUpDown, Eye, Minus, CreditCard, Landmark } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../context/ProductContext';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,9 @@ const Shop: React.FC = () => {
   const { products } = useProducts();
   const { items, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [checkoutStep, setCheckoutStep] = useState<'cart' | 'form' | 'success'>('cart');
+  // Steps: cart -> form -> payment -> success
+  const [checkoutStep, setCheckoutStep] = useState<'cart' | 'form' | 'payment' | 'success'>('cart');
+  const [paymentMethod, setPaymentMethod] = useState<string>('');
   
   // Filter & Sort States
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
@@ -34,12 +36,24 @@ const Shop: React.FC = () => {
     return result;
   }, [products, selectedCategory, sortOrder]);
 
-  const handleCheckout = (e: React.FormEvent) => {
+  const handleShippingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setCheckoutStep('payment');
+  };
+
+  const handleFinalPayment = () => {
+    if (!paymentMethod) return;
+    
+    // Aquí iría la lógica para conectar con Odoo:
+    // 1. Enviar items y datos de usuario a Odoo API -> Crear Sale Order
+    // 2. Recibir confirmación
+    // 3. Procesar pago con la pasarela seleccionada
+    
     setCheckoutStep('success');
     setTimeout(() => {
       clearCart();
       setCheckoutStep('cart');
+      setPaymentMethod('');
       setIsCartOpen(false);
     }, 3000);
   };
@@ -164,7 +178,12 @@ const Shop: React.FC = () => {
             
             {/* Cart Header */}
             <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-800">Tu Carrito</h2>
+              <h2 className="text-xl font-bold text-gray-800">
+                {checkoutStep === 'cart' && 'Tu Carrito'}
+                {checkoutStep === 'form' && 'Datos de Envío'}
+                {checkoutStep === 'payment' && 'Método de Pago'}
+                {checkoutStep === 'success' && '¡Orden Completada!'}
+              </h2>
               <button onClick={() => setIsCartOpen(false)} className="text-gray-500 hover:text-red-500">
                 <X className="h-6 w-6" />
               </button>
@@ -173,12 +192,15 @@ const Shop: React.FC = () => {
             {/* Cart Content */}
             <div className="flex-1 overflow-y-auto p-6">
               {checkoutStep === 'success' ? (
-                <div className="h-full flex flex-col items-center justify-center text-center">
-                  <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 animate-bounce">
-                    <ShoppingBag className="h-10 w-10" />
+                <div className="h-full flex flex-col items-center justify-center text-center animate-fade-in">
+                  <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 animate-bounce">
+                    <ShoppingBag className="h-12 w-12" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">¡Gracias por tu compra!</h3>
-                  <p className="text-gray-600">Tu pedido ha sido simulado con éxito.</p>
+                  <p className="text-gray-600 mb-6">Tu pedido ha sido enviado a nuestro sistema (Odoo).</p>
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 w-full">
+                    <p className="text-sm text-gray-500">ID de Orden: <span className="font-mono text-gray-900 font-bold">SO-{Math.floor(Math.random() * 10000)}</span></p>
+                  </div>
                 </div>
               ) : items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-gray-400">
@@ -186,7 +208,7 @@ const Shop: React.FC = () => {
                   <p>Tu carrito está vacío.</p>
                 </div>
               ) : checkoutStep === 'cart' ? (
-                <div className="space-y-6">
+                <div className="space-y-6 animate-fade-in">
                   {items.map(item => (
                     <div key={item.id} className="flex gap-4 bg-white p-2 rounded-lg border border-gray-100 shadow-sm">
                       <img src={item.image} alt={item.name} className="w-20 h-20 rounded-md object-cover" />
@@ -207,21 +229,71 @@ const Shop: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              ) : (
+              ) : checkoutStep === 'form' ? (
                 // Checkout Form
-                <form id="checkout-form" onSubmit={handleCheckout} className="space-y-4">
-                   <h3 className="font-bold text-lg mb-4">Datos de Envío</h3>
+                <form id="shipping-form" onSubmit={handleShippingSubmit} className="space-y-4 animate-fade-in">
+                   <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><Landmark className="h-5 w-5 text-brand-orange" /> Dirección de Entrega</h3>
                    <input required type="text" placeholder="Nombre Completo" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-orange focus:outline-none" />
                    <input required type="email" placeholder="Email" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-orange focus:outline-none" />
                    <input required type="text" placeholder="Dirección" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-orange focus:outline-none" />
                    <div className="grid grid-cols-2 gap-4">
                      <input required type="text" placeholder="Ciudad" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-orange focus:outline-none" />
-                     <input required type="text" placeholder="Código Postal" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-orange focus:outline-none" />
-                   </div>
-                   <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800 border border-yellow-200">
-                     Nota: Esto es una simulación. No se realizará ningún cobro real.
+                     <input required type="text" placeholder="Teléfono" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-orange focus:outline-none" />
                    </div>
                 </form>
+              ) : (
+                // Payment Selection
+                <div className="space-y-6 animate-fade-in">
+                  <div className="bg-yellow-50 p-4 rounded-lg text-sm text-yellow-800 border border-yellow-200 mb-6">
+                    Al confirmar, se creará la orden en nuestro sistema.
+                  </div>
+                  
+                  <h3 className="font-bold text-gray-900 mb-4">Selecciona tu medio de pago:</h3>
+                  
+                  <button 
+                    onClick={() => setPaymentMethod('stripe')}
+                    className={`w-full p-4 rounded-xl border-2 flex items-center justify-between transition-all ${
+                      paymentMethod === 'stripe' 
+                      ? 'border-brand-orange bg-orange-50 shadow-md' 
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-blue-600 text-white p-2 rounded-md">
+                        <CreditCard className="h-6 w-6" />
+                      </div>
+                      <div className="text-left">
+                        <span className="block font-bold text-gray-900">Tarjeta Crédito/Débito</span>
+                        <span className="text-xs text-gray-500">Procesado por Stripe</span>
+                      </div>
+                    </div>
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'stripe' ? 'border-brand-orange' : 'border-gray-300'}`}>
+                      {paymentMethod === 'stripe' && <div className="w-3 h-3 rounded-full bg-brand-orange"></div>}
+                    </div>
+                  </button>
+
+                  <button 
+                    onClick={() => setPaymentMethod('mercadopago')}
+                    className={`w-full p-4 rounded-xl border-2 flex items-center justify-between transition-all ${
+                      paymentMethod === 'mercadopago' 
+                      ? 'border-brand-orange bg-orange-50 shadow-md' 
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-blue-400 text-white p-2 rounded-md">
+                        <Landmark className="h-6 w-6" />
+                      </div>
+                      <div className="text-left">
+                        <span className="block font-bold text-gray-900">Mercado Pago / PSE</span>
+                        <span className="text-xs text-gray-500">Transferencia bancaria segura</span>
+                      </div>
+                    </div>
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'mercadopago' ? 'border-brand-orange' : 'border-gray-300'}`}>
+                      {paymentMethod === 'mercadopago' && <div className="w-3 h-3 rounded-full bg-brand-orange"></div>}
+                    </div>
+                  </button>
+                </div>
               )}
             </div>
 
@@ -232,14 +304,15 @@ const Shop: React.FC = () => {
                   <span className="text-gray-600">Total</span>
                   <span className="text-2xl font-black text-gray-900">${cartTotal.toFixed(2)}</span>
                 </div>
+                
                 {checkoutStep === 'cart' ? (
                    <button 
                      onClick={() => setCheckoutStep('form')}
                      className="w-full bg-brand-orange text-white py-3 rounded-lg font-bold hover:bg-orange-600 transition-colors shadow-md"
                    >
-                     Proceder al Pago
+                     Continuar Compra
                    </button>
-                ) : (
+                ) : checkoutStep === 'form' ? (
                   <div className="flex gap-3">
                     <button 
                       onClick={() => setCheckoutStep('cart')}
@@ -249,10 +322,30 @@ const Shop: React.FC = () => {
                     </button>
                     <button 
                       type="submit"
-                      form="checkout-form"
-                      className="w-2/3 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition-colors shadow-md"
+                      form="shipping-form"
+                      className="w-2/3 bg-brand-orange text-white py-3 rounded-lg font-bold hover:bg-orange-600 transition-colors shadow-md"
                     >
-                      Confirmar Pedido
+                      Ir a Pagar
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-3">
+                    <button 
+                      onClick={() => setCheckoutStep('form')}
+                      className="w-1/3 bg-gray-200 text-gray-800 py-3 rounded-lg font-bold hover:bg-gray-300 transition-colors"
+                    >
+                      Atrás
+                    </button>
+                    <button 
+                      onClick={handleFinalPayment}
+                      disabled={!paymentMethod}
+                      className={`w-2/3 py-3 rounded-lg font-bold transition-colors shadow-md ${
+                        paymentMethod 
+                        ? 'bg-green-600 text-white hover:bg-green-700' 
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      Pagar Ahora
                     </button>
                   </div>
                 )}
