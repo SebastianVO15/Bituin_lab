@@ -3,12 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import Logo from './Logo';
-
-// INSTRUCCIONES PARA PONER TU PROPIA IMAGEN:
-// 1. Crea una carpeta llamada 'assets' en la raíz.
-// 2. Sube tu imagen (ej. logo.png) ahí.
-// 3. Descomenta la siguiente línea:
-// import logoImg from '../assets/logo.png'; 
+// import logoImg from '../assets/logo.png'; // Descomentar solo si el archivo existe realmente
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,10 +33,7 @@ const Navbar: React.FC = () => {
             <Link to="/" className="flex items-center gap-3" onClick={() => setIsOpen(false)}>
               {/* Logo Container with white background for contrast */}
               <div className="bg-white/95 p-2 px-3 rounded-lg shadow-sm hover:scale-105 transition-transform flex items-center justify-center">
-                {/* 
-                   Si descomentaste el import arriba, agrega: imageSrc={logoImg} 
-                   dentro del componente Logo abajo.
-                */}
+                {/* Usamos el Logo SVG por defecto para evitar errores de carga */}
                 <Logo className="h-8 md:h-9 w-auto" variant="dark" />
               </div>
               

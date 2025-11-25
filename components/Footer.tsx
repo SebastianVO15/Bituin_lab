@@ -1,9 +1,7 @@
 import React from 'react';
 import { Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 import Logo from './Logo';
-
-// INSTRUCCIONES: Si subiste tu logo a 'assets', impórtalo aquí también:
-// import logoImg from '../assets/logo.png'; 
+// import logoImg from '../assets/logo.png'; // Descomentar solo si el archivo existe realmente
 
 const Footer: React.FC = () => {
   return (
@@ -13,9 +11,7 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="space-y-6">
             <div className="flex justify-start">
-               {/* 
-                   Si descomentaste el import, usa: <Logo imageSrc={logoImg} ... />
-               */}
+              {/* Usamos el Logo SVG por defecto para evitar errores de carga */}
               <Logo className="h-12 w-auto" variant="light" />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
