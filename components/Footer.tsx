@@ -7,9 +7,21 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Brand */}
-          <div className="space-y-4">
-            <h3 className="font-display font-black text-2xl text-brand-orange">BITUIN LAB</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
+          <div className="space-y-6">
+            <img 
+              src="/logo.png" 
+              alt="Bituin Lab" 
+              className="h-20 w-auto object-contain"
+              onError={(e) => {
+                // Fallback to text if image fails to load
+                e.currentTarget.style.display = 'none';
+                const span = document.createElement('span');
+                span.className = "font-display font-black text-2xl text-brand-orange";
+                span.innerText = "BITUIN LAB";
+                e.currentTarget.parentElement?.insertBefore(span, e.currentTarget);
+              }}
+            />
+            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
               Un laboratorio creativo que transforma lo convencional en experiencias auténticas y memorables. Entre lo que imaginas y lo que necesitas.
             </p>
             <div className="flex space-x-4">

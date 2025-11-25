@@ -27,10 +27,29 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <div className="flex-shrink-0 flex flex-col">
-            <Link to="/" className="flex flex-col" onClick={() => setIsOpen(false)}>
-              <span className="font-display font-black text-2xl tracking-wider text-white">BITUIN LAB</span>
-              <span className="text-[10px] text-white/80 uppercase tracking-wide hidden sm:block">Entre lo que imaginas y lo que necesitas</span>
+          <div className="flex-shrink-0 flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3" onClick={() => setIsOpen(false)}>
+              {/* Logo Container with white background for contrast */}
+              <div className="bg-white/95 p-2 rounded-lg shadow-sm hover:scale-105 transition-transform">
+                <img 
+                  src="/logo.png" 
+                  alt="Bituin Lab Logo" 
+                  className="h-8 md:h-10 w-auto object-contain" 
+                  onError={(e) => {
+                    // Fallback to text if image fails to load
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement?.classList.remove('bg-white/95', 'p-2');
+                  }}
+                />
+                {/* Fallback text visible only if image is hidden/missing */}
+                <span className="font-display font-black text-2xl tracking-wider text-white hidden">BITUIN LAB</span>
+              </div>
+              
+              <div className="flex flex-col">
+                <span className="text-[10px] text-white/90 uppercase tracking-wide hidden lg:block font-bold leading-tight">
+                  Entre lo que imaginas <br/> y lo que necesitas
+                </span>
+              </div>
             </Link>
           </div>
 
