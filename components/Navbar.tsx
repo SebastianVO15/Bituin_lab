@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import Logo from './Logo';
+
+// INSTRUCCIONES PARA PONER TU PROPIA IMAGEN:
+// 1. Crea una carpeta llamada 'assets' en la raíz.
+// 2. Sube tu imagen (ej. logo.png) ahí.
+// 3. Descomenta la siguiente línea:
+// import logoImg from '../assets/logo.png'; 
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,19 +37,12 @@ const Navbar: React.FC = () => {
           <div className="flex-shrink-0 flex items-center gap-3">
             <Link to="/" className="flex items-center gap-3" onClick={() => setIsOpen(false)}>
               {/* Logo Container with white background for contrast */}
-              <div className="bg-white/95 p-2 rounded-lg shadow-sm hover:scale-105 transition-transform">
-                <img 
-                  src="/logo.png" 
-                  alt="Bituin Lab Logo" 
-                  className="h-8 md:h-10 w-auto object-contain" 
-                  onError={(e) => {
-                    // Fallback to text if image fails to load
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement?.classList.remove('bg-white/95', 'p-2');
-                  }}
-                />
-                {/* Fallback text visible only if image is hidden/missing */}
-                <span className="font-display font-black text-2xl tracking-wider text-white hidden">BITUIN LAB</span>
+              <div className="bg-white/95 p-2 px-3 rounded-lg shadow-sm hover:scale-105 transition-transform flex items-center justify-center">
+                {/* 
+                   Si descomentaste el import arriba, agrega: imageSrc={logoImg} 
+                   dentro del componente Logo abajo.
+                */}
+                <Logo className="h-8 md:h-9 w-auto" variant="dark" />
               </div>
               
               <div className="flex flex-col">

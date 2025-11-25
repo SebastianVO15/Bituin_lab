@@ -1,5 +1,9 @@
 import React from 'react';
 import { Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import Logo from './Logo';
+
+// INSTRUCCIONES: Si subiste tu logo a 'assets', impórtalo aquí también:
+// import logoImg from '../assets/logo.png'; 
 
 const Footer: React.FC = () => {
   return (
@@ -8,19 +12,12 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Brand */}
           <div className="space-y-6">
-            <img 
-              src="/logo.png" 
-              alt="Bituin Lab" 
-              className="h-20 w-auto object-contain"
-              onError={(e) => {
-                // Fallback to text if image fails to load
-                e.currentTarget.style.display = 'none';
-                const span = document.createElement('span');
-                span.className = "font-display font-black text-2xl text-brand-orange";
-                span.innerText = "BITUIN LAB";
-                e.currentTarget.parentElement?.insertBefore(span, e.currentTarget);
-              }}
-            />
+            <div className="flex justify-start">
+               {/* 
+                   Si descomentaste el import, usa: <Logo imageSrc={logoImg} ... />
+               */}
+              <Logo className="h-12 w-auto" variant="light" />
+            </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
               Un laboratorio creativo que transforma lo convencional en experiencias auténticas y memorables. Entre lo que imaginas y lo que necesitas.
             </p>
