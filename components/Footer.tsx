@@ -1,6 +1,6 @@
 import React from 'react';
 import { Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
-import Logo from './Logo';
+import SiteLogo from './SiteLogo';
 // import logoImg from '../assets/logo.png'; // Descomentar solo si el archivo existe realmente
 
 const Footer: React.FC = () => {
@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
           <div className="space-y-6">
             <div className="flex justify-start">
               {/* Usamos el Logo SVG por defecto para evitar errores de carga */}
-              <Logo className="h-12 w-auto" variant="light" />
+              <SiteLogo className="h-16 w-auto" variant="light" imageSrc="/logo.png" alt="Bituin Lab" />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
               Un laboratorio creativo que transforma lo convencional en experiencias auténticas y memorables. Entre lo que imaginas y lo que necesitas.

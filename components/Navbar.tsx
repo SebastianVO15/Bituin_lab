@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import Logo from './Logo';
+import SiteLogo from './SiteLogo';
 // import logoImg from '../assets/logo.png'; // Descomentar solo si el archivo existe realmente
 
 const Navbar: React.FC = () => {
@@ -33,8 +33,8 @@ const Navbar: React.FC = () => {
             <Link to="/" className="flex items-center gap-3" onClick={() => setIsOpen(false)}>
               {/* Logo Container with white background for contrast */}
               <div className="bg-white/95 p-2 px-3 rounded-lg shadow-sm hover:scale-105 transition-transform flex items-center justify-center">
-                {/* Usamos el Logo SVG por defecto para evitar errores de carga */}
-                <Logo className="h-8 md:h-9 w-auto" variant="dark" />
+                {/* Usamos el Logo; carga desde /logo.png si existe en public/ */}
+                <SiteLogo className="h-12 md:h-14 w-auto" variant="dark" imageSrc="/logo.png" alt="Bituin Lab" />
               </div>
               
               <div className="flex flex-col">
